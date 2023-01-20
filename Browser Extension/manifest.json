@@ -1,0 +1,13 @@
+{
+    "manifest_version": 2,
+    "name": "Realtime Censorship",
+    "version": "1.0",
+    "permissions": ["<all_urls>"],
+    "description": "An Extension to redact all NSFW content",
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": ["realtimeCensorship.js"]
+      }
+    ]
+  }

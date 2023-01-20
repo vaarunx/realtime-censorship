@@ -1,15 +1,14 @@
 // Imports 
 const express = require("express");
-const cherio = require('cherio');
-const request = require('request');
-const fs = require('fs');
+var cors = require('cors')
 
-// Create a Write Stream 
-var WriteStream  = fs.createWriteStream("ImagesLink.txt", "UTF-8");
+
 
 // const res = require('express/lib/response')
 const app = express();
-const port = 3000;
+app.use(cors())
+
+const port = 8000;
 
 
 

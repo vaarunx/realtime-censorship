@@ -3,6 +3,7 @@ const express = require("express")
 const puppeteer = require("puppeteer");
 const cherio = require('cherio');
 const request = require('request');
+var cors = require('cors')
 const fs = require('fs');
 
 const router = express.Router()
@@ -94,6 +95,7 @@ async function scrapePage(page) {
             // Extract the text from the page
             let newItemsText = await page.evaluate(() => {
                 let elements = Array.from(document.querySelectorAll('p'));
+                
                 return elements.map(element => element.innerText);
             });
             itemsText = [...itemsText, ...newItemsText];
