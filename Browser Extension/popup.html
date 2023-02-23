@@ -1,16 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h3 style="border-bottom: 1px solid rgb(222, 222, 222); padding-bottom: 10px;"><img src="logo.png" width="5%" alt="logo"> <span style="color: red;"> Realtime Censorship</span> for chrome</h3> 
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"
+    />
+  </head>
+  <body>
+    <h3
+      style="border-bottom: 1px solid rgb(222, 222, 222); padding-bottom: 10px"
+    >
+      <img src="logo.png" width="5%" alt="logo" />
+      <span style="color: red"> Realtime Censorship</span> for chrome
+    </h3>
     <p>An Extension to redact all NSFW content.</p>
     <div class="center">
-        <p>Block Ads too? Check out our <a href="" style="color: red; font-weight: 700;">adBlocker</a></p>
-        <button id="scrapeData">Check Safe</button> 
+      <p>
+        Block Ads too? Check out our
+        <a href="" style="color: red; font-weight: 700">adBlocker</a>
+      </p>
+      <button id="scrapeData">Check Safe</button>
     </div>
     <table id="dataList"></table>
     <script src="popup.js"></script>
-</body>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script> -->
+    <script src="jquery-3.6.3.min.js"></script>
+  </body>
 </html>
