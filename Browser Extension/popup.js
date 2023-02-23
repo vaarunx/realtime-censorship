@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     });
     // alert(scrapedData.join('\n'));
-    alert(scrapedData.join('\n'));
+    // alert(scrapedData.join('\n'));
 
   }
   

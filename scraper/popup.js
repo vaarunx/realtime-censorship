@@ -1,5 +1,7 @@
+let scraper = document.getElementById("scrape-btn");
+
 // Listen for clicks on the "Scrape Website" button
-document.getElementById("scrape-btn").addEventListener("click", function () {
+scraper.addEventListener("click", function () {
   // Get the current tab
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     // Send a message to the content script to scrape the website
