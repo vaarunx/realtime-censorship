@@ -2,5 +2,6 @@ api/node_modules
 bert-small-512-sentiment.sav
 env/
 small-bert-512/
+Express\ Server/node_modules
 .DS_Store
 *.pyc
