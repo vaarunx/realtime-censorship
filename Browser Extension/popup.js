@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   }
   
-  var url = "http://127.0.0.1:5000/apiTesting";
+  var url = "http://127.0.0.1:4000/classify";
 
   $.ajax({
     type: "POST",
