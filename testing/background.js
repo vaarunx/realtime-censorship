@@ -7,7 +7,7 @@ chrome.action.onClicked.addListener((tab) => {
 
 function blurElementsByText() {
   // This function blurs elements that contain the specified text
-  const text = "My First Heading";
+  c 
   const elements = document.querySelectorAll("*");
   // for (let i = 0; i < elements.length; i++) {
 

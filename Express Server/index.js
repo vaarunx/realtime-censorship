@@ -15,6 +15,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const PORT = process.env.PORT || 4000;
 
+let resultFinal;
+let labels;
+let model_predictions;
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -35,7 +39,7 @@ app.post("/classify", (req, res) => {
   // console.log(final_res.length)
   // console.log(typeof(final_res))
 
-
+    
     let result = [];
     let currentString = "";
     let inTag = false;
@@ -57,11 +61,6 @@ app.post("/classify", (req, res) => {
     }
     console.log("Just the result " + result.length)
 
-
-
-
-
-
   resultFinal = removeSentencesOccurMoreThan10(result)
   console.log("Final " + resultFinal.length)
 
@@ -70,12 +69,17 @@ app.post("/classify", (req, res) => {
   toxicity.load(threshold).then((model) => {
     // const sentences = ["you suck"];
     model.classify(resultFinal).then((predictions) => {
-      console.log(predictions);
+      
+      // predictions.filter(checkTrue)
+      // console.log(predictions);
+      model_predictions = predictions;
+        //console.log(predictions)
     });
   });
+ 
+  console.log("Does not come here")
 
-
-
+  // console.log("Hello " + predictions[0].results[0])
   // fs.writeFile('output.txt', resultFinal.join('\n'), (err) => {
   //   if (err) throw err;
   //     console.log('The file has been saved!');
@@ -83,10 +87,27 @@ app.post("/classify", (req, res) => {
 
   // model
   // res.send(JSON.stringify(scraped_data));
+  labels = Array.from(Array(7), () => new Array(resultFinal.length))
+  for (let i = 0; i < resultFinal.length; i++){
+  labels[0][i]=model_predictions[0].result[i].match;
+  labels[1][i]=model_predictions[1].result[i].match;
+  labels[2][i]=model_predictions[2].result[i].match;
+  labels[3][i]=model_predictions[3].result[i].match;
+  labels[4][i]=model_predictions[4].result[i].match;
+  labels[5][i]=model_predictions[5].result[i].match;
+  labels[6][i]=model_predictions[6].result[i].match;
+}
+console.log(labels)
 });
 
+// const checkTrue = (predictions) => {
+//   return 
+// }
 
-function removeSentencesOccurMoreThan10(arr) {
+
+//console.log(labels)
+
+const removeSentencesOccurMoreThan10 = (arr) =>{
   let counts = {};
   let result = [];
   for (let i = 0; i < arr.length; i++) {
