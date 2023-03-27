@@ -1,154 +1,104 @@
-const express = require("express");
-const cors = require("cors");
-const toxicity = require("@tensorflow-models/toxicity");
-const bodyParser = require("body-parser");
-const fs = require("fs");
+const express = require('express')
+const cors = require('cors')
+const toxicity = require('@tensorflow-models/toxicity')
+const bodyParser = require('body-parser')
+const fs = require('fs')
+const { data } = require('@tensorflow/tfjs')
+const { type } = require('os')
+const app = express()
 
-const app = express();
+app.use(cors())
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ limit: '50mb' }))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(cors());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+const PORT = process.env.PORT || 4000
 
-const PORT = process.env.PORT || 4000;
+let resultFinal
+var word_list
 
-let resultFinal;
-let labels;
-let model_predictions;
+fs.readFile('words.txt', (err, inputD) => {
+  if (err) throw err
+  word_list = inputD.toString().split('\n')
+})
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
-app.post("/classify", (req, res) => {
-  console.log("inside classify");
+app.post('/classify', (req, res) => {
+
   let scraped_data = JSON.stringify(req.body);
-
-  // model
-
-  // let result = scraped_data.replace(/<style[^>]*>.*?<\/style>/gms, ' ').replace(/<[^>]*>/gm, ' ');
-  // console.log(typeof(result))
-  // let res2 = result.replace(/\s+/g, ' ').trim();
-  // let final_res = res2.split(',');
-
-  // console.log(final_res)
-  // console.log(final_res.length)
-  // console.log(typeof(final_res))
-
-  let result = [];
-  let currentString = "";
-  let inTag = false;
-  for (let i = 0; i < scraped_data.length; i++) {
-    if (scraped_data[i] === "<") {
-      inTag = true;
-      if (currentString !== "" && currentString[0] !== ".") {
-        result.push(currentString);
-        currentString = "";
+  let data = scraped_data.split(",")
+  let cleaned_data = []
+  for(let i=0; i<data.length; i++){
+    // remove html tags
+    new_str = data[i].replace(/<style[^>]*>.*?<\/style>/gms, ' ').replace(/<[^>]*>/gm, ' ');
+    // remove non-alphabets
+    new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
+    // remove multiple spaces
+    new_str = new_str.replace(/\s+/g, " ");
+    // remove non words
+    if(new_str.length > 1){
+      list_wrds = new_str.split(" ")
+      let clean_str = ""
+      for(let j=0; j<list_wrds.length; j++){
+        if(list_wrds[j].length > 1 && word_list.includes(list_wrds[j].toLowerCase())){
+            clean_str+=list_wrds[j]
+            clean_str+=" "
+        }
       }
-    } else if (scraped_data[i] === ">") {
-      inTag = false;
-    } else if (!inTag) {
-      currentString += scraped_data[i];
+      if(clean_str.length>1){
+        cleaned_data.push(clean_str)
+      }
     }
   }
-  if (currentString !== "" && currentString[0] !== ".") {
-    result.push(currentString);
-  }
-  console.log("Just the result " + result.length);
+  console.log(cleaned_data)
 
-  resultFinal = removeSentencesOccurMoreThan10(result);
-
+  resultFinal = removeSentencesOccurMoreThan10(cleaned_data)
+  console.log("Cleaned_data " + cleaned_data.length)
   console.log("Final " + resultFinal.length);
 
-  const threshold = 0.9;
-  // toxicity.load(threshold).then((model) => {
-  //   // const sentences = ["you suck"];
-  //   model.classify(resultFinal).then((predictions) => {
-  //     // predictions.filter(checkTrue)
-  //     // console.log(predictions);
-  //     this.model_predictions = predictions;
-  //     //console.log(predictions)
-  //   });
-  // });
-
-  toxicity.load(threshold)
-  .then((model) => {
-      return model.classify(resultFinal);
-  })
-  .then((predictions) => {
-      console.log(predictions);
-      console.log("Result final is " + resultFinal)
-      const propertyValues = Object.values(resultFinal);
-
-      console.log(propertyValues[0]);
-      console.log(typeof(propertyValues));
-
-
-      let trueLabels = [];
-      console.log("Len " + predictions.length)
+  const threshold = 0.9
+  toxicity
+    .load(threshold)
+    .then((model) => {
+      return model.classify(resultFinal.slice(0, 15))
+    })
+    .then((predictions) => {
+      console.log(predictions)
+      let i = 0
+      let trueLabels = []
       for (let i = 0; i < predictions.length; i++) {
-          for (let j = 0; j < predictions[i].results.length; j++) {
-              if (predictions[i].results[j].match === true) {
-                  trueLabels.push(predictions[i]);
-              }
+        for (let j = 0; j < predictions[i].results.length; j++) {
+          if (predictions[i].results[j].match === true) {
+            let x = {}
+            x['sentence'] = resultFinal[j]
+            x['label'] = predictions[i].label
+            trueLabels.push(x)
           }
+        }
       }
-      console.log(trueLabels);
-
-    });
-  });
-
-  // labels = Array.from(Array(7), () => new Array(resultFinal.length));
-  // for (let i = 0; i < resultFinal.length; i++) {
-  //   labels[0][i] = predictions[0].results[i].match;
-  //   labels[1][i] = predictions[1].results[i].match;
-  //   labels[2][i] = predictions[2].results[i].match;
-  //   labels[3][i] = predictions[3].results[i].match;
-  //   labels[4][i] = predictions[4].results[i].match;
-  //   labels[5][i] = predictions[5].results[i].match;
-  //   labels[6][i] = predictions[6].results[i].match;
-  // }
-  // console.log(labels);
-
-
-
-  // console.log("Hello " + predictions[0].results[0])
-  // fs.writeFile('output.txt', resultFinal.join('\n'), (err) => {
-  //   if (err) throw err;
-  //     console.log('The file has been saved!');
-  //   });
-
-  // model
-  // res.send(JSON.stringify(scraped_data));
-
-
-// const checkTrue = (predictions) => {
-//   return
-// }
-
-//console.log(labels)
+      console.log(trueLabels)
+    })
+})
 
 const removeSentencesOccurMoreThan10 = (arr) => {
-  let counts = {};
-  let result = [];
+  let counts = {}
+  let result = []
   for (let i = 0; i < arr.length; i++) {
-    let sentence = arr[i];
+    let sentence = arr[i]
     if (counts[sentence] === undefined) {
-      counts[sentence] = 1;
+      counts[sentence] = 1
     } else {
-      counts[sentence]++;
+      counts[sentence]++
     }
     if (counts[sentence] <= 10) {
-      result.push(sentence);
+      result.push(sentence)
     }
   }
-  return result;
-};
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-{
-  /* <p> Strong man and a <b> strong</b> girl </p> */
+  return result
 }
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
