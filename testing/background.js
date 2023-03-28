@@ -7,8 +7,9 @@ chrome.action.onClicked.addListener((tab) => {
 
 function blurElementsByText() {
   // This function blurs elements that contain the specified text
-  c 
+
   const elements = document.querySelectorAll("*");
+  text = "Fuck you"
   // for (let i = 0; i < elements.length; i++) {
 
   //   if (elements[i].textContent.indexOf(text) !== -1) {
@@ -36,7 +37,7 @@ function blurElementsByText() {
 
 function findString() {
   const elements = document.querySelectorAll("*");
-  const text = "HTML is easy to learn - You will enjoy it!";
+  const text = "Fuck";
   console.log(document.elements.textContent = `String found? ${window.find(text)}`);
 }
 

@@ -23,17 +23,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
       list.appendChild(tr);
       scrapedData.push(tr.innerHTML);
-
-
-
-
     });
     // alert(scrapedData.join('\n'));
     // alert(scrapedData.join('\n'));
-
   }
-  
+
   var url = "http://127.0.0.1:4000/classify";
+
+  let finalSentence = [];
 
   $.ajax({
     type: "POST",
@@ -41,14 +38,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     data: JSON.stringify(scrapedData),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    error: function () {
-      // alert("Error");
-      console.log("Error")
-    },
-    success: function () {
-      alert("OK");
-    },
-  });
+  })
+    .done(function (response) {
+      console.log("Hello");
+      console.log(response);
+
+      response.forEach((element) => {
+        finalSentence.push(element);
+      });
+    })
+    .fail(function (error) {
+      console.log(error);
+    });
+
+    text = "Fuck you"
+
+  const elements = document.querySelectorAll("*");
+
+  for (let i = 0; i < elements.length; i++) {
+    if (
+      elements[i].childNodes.length === 1 &&
+      elements[i].textContent.indexOf(text) !== -1
+    ) {
+      console.log("Hjrhdjknfrd")
+      elements[i].style.filter = "blur(7px)";
+      //   filter: blur(5px);
+    }
+  }
 });
 
 // Button's click event listener
@@ -67,7 +83,7 @@ scrapeData.addEventListener("click", async () => {
 function scrapeDataFromPage() {
   // RegEx to parse data from HTML code
   const dataRegex =
-    /(?<=\<h1>).*(?=\<\/h1>)|(?<=\<h2>).*(?=\<\/h2>)|(?<=\<h3>).*(?=\<\/h3>)|(?<=\<h4>).*(?=\<\/h4>)|(?<=\<h5>).*(?=\<\/h5>)|(?<=\<h6>).*(?=\<\/h6>)|(?<=\<p>).*(?=\<\/p>)| (?<=\<a>).*(?=\<\/a>)|(?<=\<strong>).*(?=\<\/strong>)|(?<=\<b>).*(?=\<\/b>)|(?<=\<em>).*(?=\<\/em>)|(?<=\<i>).*(?=\<\/i>)|(?<=\<ol>).*(?=\<\/ol>)|(?<=\<ul>).*(?=\<\/ul>)|(?<=\<li>).*(?=\<\/li>)|(?<=\<div>).*(?=\<\/div>)/g;
+    /(?<=\<h1>).*(?=\<\/h1>)|(?<=\<h2>).*(?=\<\/h2>)|(?<=\<h3>).*(?=\<\/h3>)|(?<=\<h4>).*(?=\<\/h4>)|(?<=\<h5>).*(?=\<\/h5>)|(?<=\<h6>).*(?=\<\/h6>)|(?<=\<p>).*(?=\<\/p>)|(?<=\<a>).*(?=\<\/a>)|(?<=\<strong>).*(?=\<\/strong>)|(?<=\<b>).*(?=\<\/b>)|(?<=\<em>).*(?=\<\/em>)|(?<=\<i>).*(?=\<\/i>)|(?<=\<ol>).*(?=\<\/ol>)|(?<=\<ul>).*(?=\<\/ul>)|(?<=\<li>).*(?=\<\/li>)|(?<=\<div>).*(?=\<\/div>)/g;
   // |(?<=\<img>).*(?=\<\/img>)
 
   // Parse data from the HTML of the page
