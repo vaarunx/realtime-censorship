@@ -21,6 +21,7 @@ var word_list;
 fs.readFile("words.txt", (err, inputD) => {
   if (err) throw err;
   word_list = inputD.toString().split("\n");
+  word_list = word_list.map(word => word.toLowerCase()) 
 });
 
 app.get("/", (req, res) => {
@@ -40,13 +41,15 @@ app.post("/classify", (req, res) => {
     new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
     // remove multiple spaces
     new_str = new_str.replace(/\s+/g, " ");
+
+    // console.log(new_str)
     // remove non words
-    if (new_str.length > 1) {
+    if (new_str.length >= 1) {
       list_wrds = new_str.split(" ");
       let clean_str = "";
       for (let j = 0; j < list_wrds.length; j++) {
         if (
-          list_wrds[j].length > 1 &&
+          list_wrds[j].length > 0 &&
           word_list.includes(list_wrds[j].toLowerCase())
         ) {
           clean_str += list_wrds[j];
@@ -64,7 +67,7 @@ app.post("/classify", (req, res) => {
   console.log("Cleaned_data " + cleaned_data.length);
   console.log("Final " + resultFinal.length);
 
-  const threshold = 0.9;
+  const threshold = 0.7;
   toxicity
     .load(threshold)
     .then((model) => {

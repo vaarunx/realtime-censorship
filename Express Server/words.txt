@@ -20,6 +20,7 @@ er
 EU
 Eu
 Eur
+a
 I
 i
 IA
@@ -17373,6 +17374,7 @@ AI's
 AIs
 Ar's
 A's
+A
 As
 as
 ASCII
