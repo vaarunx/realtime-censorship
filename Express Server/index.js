@@ -86,15 +86,19 @@ app.post("/classify", (req, res) => {
       }
       
       console.log(trueLabels);
-
-      finalSentence = []
+      let finalSentence = new Set()
       trueLabels.forEach(element => {
-        finalSentence.push(element.sentence)
+        finalSentence.add(element.sentence)
       });
 
       console.log("FinalSentence " + finalSentence)
 
-      res.send(finalSentence)
+      let val = finalSentence.values()
+      finalSentenceArray = Array.from(val)
+
+      console.log("Final Sentence in an array format is " + finalSentenceArray)
+
+      res.send(finalSentenceArray)
       console.log("SENTT")
 
     });

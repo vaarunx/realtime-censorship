@@ -1,32 +1,65 @@
 let scrapeData = document.getElementById("scrapeData");
 let list = document.getElementById("dataList");
+scrapedData = [];
+
+// let async fn = () => {
+//   return await chrome.tabs.query({ active: true, currentWindow: true });
+// }
+// let [tab] = fn();
+
+async function getCurrentTab() {
+  let queryOptions = { active: true, currentWindow: true };
+  // `tab` will either be a `tabs.Tab` instance or `undefined`.
+  let [tab] = await chrome.tabs.query(queryOptions);
+  console.log("This is the tab ID 2nd time " + tab.id);
+  return tab;
+}
+
+const tab = getCurrentTab();
 
 // Handler to recieve data from content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Get data
   let data = request.data;
 
+  ajaxCall(data);
   // Display data on popup
-  const scrapedData = [];
 
-  if (data == null || data.length == 0) {
-    let tr = document.createElement("tr");
-    tr.innerText = "No Data Found";
-    list.appendChild(tr);
-  } else {
-    data.forEach((datum) => {
-      let tr = document.createElement("tr");
-      tr.innerHTML = datum;
-      Array.from(tr.children).forEach((child) => {
-        if (!(child.tagName === "A" || child.tagName === "SPAN")) return;
-        child.replaceWith(document.createTextNode(child.textContent));
-      });
-      list.appendChild(tr);
-      scrapedData.push(tr.innerHTML);
-    });
-    // alert(scrapedData.join('\n'));
-    // alert(scrapedData.join('\n'));
-  }
+  // if (data == null || data.length == 0) {
+  //   let tr = document.createElement("tr");
+  //   tr.innerText = "No Data Found";
+  //   list.appendChild(tr);
+  // } else {
+  //   data.forEach((datum) => {
+  //     let tr = document.createElement("tr");
+  //     tr.innerHTML = datum;
+  //     Array.from(tr.children).forEach((child) => {
+  //       if (!(child.tagName === "A" || child.tagName === "SPAN")) return;
+  //       child.replaceWith(document.createTextNode(child.textContent));
+  //     });
+  //     list.appendChild(tr);
+  //     scrapedData.push(tr.innerHTML);
+  //   });
+  //   // alert(scrapedData.join('\n'));
+  //   // alert(scrapedData.join('\n'));
+  // }
+
+  // const elements = document.querySelectorAll("*");
+
+  // for (let i = 0; i < elements.length; i++) {
+  //   if (
+  //     elements[i].childNodes.length === 1 &&
+  //     elements[i].textContent.indexOf(text) !== -1
+  //   ) {
+  //     console.log("Hjrhdjknfrd")
+  //     elements[i].style.filter = "blur(7px)";
+  //     //   filter: blur(5px);
+  //   }
+  // }
+});
+
+async function ajaxCall(data) {
+  const tab = await getCurrentTab();
 
   var url = "http://127.0.0.1:4000/classify";
 
@@ -35,7 +68,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   $.ajax({
     type: "POST",
     url: url,
-    data: JSON.stringify(scrapedData),
+    data: JSON.stringify(data),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
   })
@@ -43,34 +76,96 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("Hello");
       console.log(response);
 
+
       response.forEach((element) => {
         finalSentence.push(element);
+      });
+      console.log("Came here " + finalSentence);
+      console.log("TABBB " + tab.id);
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: function () {
+          window.replaceData = function (data) {
+            console.log("Please work man " + data);
+            data = data.map(string => string.trim());
+
+            // let text = "Fuck you"
+            // const elements = document.querySelectorAll("*");
+            // console.log("Elements length is " + elements.length)
+            // console.log("Element 1 is " + elements.values)
+
+            // for (let i = 0; i < elements.length; i++) {
+
+            //   console.log(data[i])
+            //   if (
+            //     elements[i].childNodes.length === 1 &&
+            //     elements[i].textContent.indexOf(data) !== -1
+            //   ) {
+            //     console.log("Hjrhdjknfrd");
+            //     elements[i].style.filter = "blur(7px)";
+            //     //   filter: blur(5px);
+            //   }
+            // }
+
+            // data.forEach((ans) => {
+            //   const elements = document.querySelectorAll(`:contains(${ans})`);
+            //   elements.forEach((element) => {
+            //     element.style.filter = "blur(5px)";
+            //   });
+            // });
+
+            data.forEach((ans) => {
+              console.log("jkhfgdnj,fdkn")
+              const xpath = `//*[contains(text(),'${ans}')]`;
+              const elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+              console.log(elements.snapshotLength)
+              for (let i = 0; i < elements.snapshotLength; i++) {
+                console.log("fdghjjfvd")
+                const element = elements.snapshotItem(i);
+                element.style.filter = 'blur(5px)';
+              }
+            })
+
+
+
+            //   chrome.scripting.executeScript({
+            //     target: { tabId: tab.id },
+            //     func: function(stringsToBlur) {
+            //       stringsToBlur.forEach(string => {
+            //         const elements = document.querySelectorAll(`:contains(${string})`);
+            //         elements.forEach(element => {
+            //           element.style.filter = 'blur(5px)';
+            //         });
+            //       });
+            //     },
+            //     args: [finalSentence]
+            //   });
+            // }
+          };
+        },
+      });
+
+      // Call the replaceData function in the scope of the current tab
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (data) => replaceData(data),
+        args: [finalSentence],
       });
     })
     .fail(function (error) {
       console.log(error);
     });
+}
 
-    text = "Fuck you"
-
-  const elements = document.querySelectorAll("*");
-
-  for (let i = 0; i < elements.length; i++) {
-    if (
-      elements[i].childNodes.length === 1 &&
-      elements[i].textContent.indexOf(text) !== -1
-    ) {
-      console.log("Hjrhdjknfrd")
-      elements[i].style.filter = "blur(7px)";
-      //   filter: blur(5px);
-    }
-  }
-});
+function replaceData(finalSentence) {
+  console.log("Came hergdhjrfjhgfdhjkdf " + finalSentence);
+}
 
 // Button's click event listener
 scrapeData.addEventListener("click", async () => {
   // Getting current active tab
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  console.log("This is the tab ID 1st time " + tab.id);
 
   // Execute script to scrape data
   chrome.scripting.executeScript({
@@ -86,8 +181,13 @@ function scrapeDataFromPage() {
     /(?<=\<h1>).*(?=\<\/h1>)|(?<=\<h2>).*(?=\<\/h2>)|(?<=\<h3>).*(?=\<\/h3>)|(?<=\<h4>).*(?=\<\/h4>)|(?<=\<h5>).*(?=\<\/h5>)|(?<=\<h6>).*(?=\<\/h6>)|(?<=\<p>).*(?=\<\/p>)|(?<=\<a>).*(?=\<\/a>)|(?<=\<strong>).*(?=\<\/strong>)|(?<=\<b>).*(?=\<\/b>)|(?<=\<em>).*(?=\<\/em>)|(?<=\<i>).*(?=\<\/i>)|(?<=\<ol>).*(?=\<\/ol>)|(?<=\<ul>).*(?=\<\/ul>)|(?<=\<li>).*(?=\<\/li>)|(?<=\<div>).*(?=\<\/div>)/g;
   // |(?<=\<img>).*(?=\<\/img>)
 
-  // Parse data from the HTML of the page
   let data = document.body.innerHTML.match(dataRegex);
+
+  // const elements = document.querySelectorAll("*");
+
+  // let text = "Fuck you";
+
+  // console.log("hereeee")
 
   // Send emails to popup
   chrome.runtime.sendMessage({ data });
