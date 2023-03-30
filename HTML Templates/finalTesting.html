@@ -73,17 +73,74 @@
         </div>
     </div>
 
-    <p style="text-align:justify;">
-        You can’t. You need other words, like pronouns, to be the object of the sentence. If you say “fuck,” for example, you need “him” or “you” or “it” to tell us whom, or what, should be metaphorically fucked. You can issue the command “Fuck shit up,” but you still need “up” as the adverbial particle. In Glaswegian Scots, “fook” is a place you can “get tae” (the complete sentence, “Get tae fook,” means “Please depart immediately, or possible harm to your person may ensue”). But you still need those other little words in the sentence.
-        Of course, if you are Samuel L. Jackson, “motherfucker” is a complete sentence. The Star Wars prequels become 300% more bearable if you add that fine word to the end of his dialogue:
-        “This party’s over, motherfucker.” (Episode II, to Count Dooku)
-        “I don’t think so, motherfucker.” (same scene)
-        “You’re under arrest, motherfucker.” (Episode III, to Chancellor Palpatine)
-        <br><br>
-        You are a retard. I hate you. I hate the fact you exist. You are scum. You are an absolute fucking douchebag. You are a lowlife piece of human garbage. You absolute fucking retard cunt. You are a waste of a human being. You've done ABSOLUTELY NOTHING that's important. You dumb cunt, you piece of shit. You're not even a son of a bitch, that's too dignified a term for what you are. You know, you're not even human. You don't deserve the word human because you are that much of a fucking disgrace to people all around the globe, worldwide. It's a dishonor to put you in the same sentence with that word, you asshole. Are you fucking proud of yourself? Are you proud of having accomplished absolutely nothing in your life? You have only done bad things in this world. You do not deserve to live, you shit. You are a terrible excuse for a human being. You are an ABSOLUTE cunt. You are nothing but a faggot brainlet. You sleazy two-faced bastard. You slimy sluggish asshole. You TRIFLING motherfucker.
-        <br><br>
-        Mother fucking cock sucking slut whore cunt with dick tow ball bitch sperm burping chicklen fucking cum guzzling dollar scank pedophile dog shit tasting rabbit fucking cross dressing homophobic sucubus shit licking corn picking shit sampler with dog shit breath cause you blew the dog that ass raped you while you were picking corn off of shit in the toilet to make corn fritters with,and eating it fresh out of the bowl.Thats just a mild one,they get way better..
-    </p>
+    <section class="p-5 bg-dark text-light">
+        <div class="container">
+            <div class="row align-items-center justify-content-betweeen">
+                <div class="col-md p-5">
+                    <h2 style="color: #6C63FF;">Dataset Description</h2>
+                    <p class="lead">
+                        TEXTUAL DATASET
+                    </p>
+                    <p>
+                        The dataset used for this project’s textual content has been gathered from various sources. A corpus of over 1000 swear words in the English language have been gathered and built from scratch which was used on top of the dataset. The main dataset that has been used for Multi-label classification is from the dataset provided by Jigsaw Conversation on Kaggle. <br> <br>
+                        The dataset comprises of 38000 comments gathered from Wikipedia which have been manually labeled by human raters for toxic behavior and is classified into the following categories namely “toxic” , “obscene” , “insult” , “severe_toxic”, “identity_hate” and “threat”
+                    </p> 
+                </div>
+                <div class="col-md">
+                    <img src="DatasetAnalysis.png" class="img-fluid" alt="">
+                </div>
+            </div> 
+            <div class="p-4">
+                <b>Toxic</b> - A nasty, disrespectful, or irrational comment is referred to as toxic if it is likely to cause other users to quit the conversation. <br>
+                For example : <span>Bye do not look come or think of comming back bitch</span> <br>
+                <br>
+                
+                <b>Obscene</b> - A statement that violates accepted moral norms is typically referred to as obscene. It can be used to describe any verbal, literary, or visual works or behavior that depicts sex in an offensive, obscene, or lascivious way. Comments that are obscene can also be insulting, impolite, or disturbing. <br>
+                For example : <span>Dick sucker before you piss around on my work</span> <br>
+                <br>
+
+                <b>Insult</b> - An insult is a crude or offensive statement or behavior that may or may not be true. Additionally, it could be an instance of arrogant or disrespectful language or behavior. Insults can range in content and context, and they can be used intentionally to hurt or offend someone. <br>
+                For example : <span>Stupid peace of shit stop deleting my stuff</span> <br>
+                <br>
+
+                <b>Identity Hate</b> - A form of hate speech known as an identity hate comment attacks a person or group based on one or more of their actual or perceived identity characteristics, such as religion, ethnicity, nationality, race, colour, descent, gender, language, economic or social background, handicap, health condition, or sexual orientation. It can be communicated through any form of expression and might be disparaging or biased towards a person or group of people. <br>
+                For example : <span>A pair of jew hating nazi schmucks</span> <br>
+                <br>
+
+                <b>Severe Toxic</b> - This type of comments are nearly the same as toxic but are more severe and attacks the person's identity. <br>
+                For example : <span>What a motherfucking piece of crap those fuckers are</span> <br>
+                <br>
+
+                <b>Threat</b> - A threat remark is a declaration that someone will suffer harm or unfavorable effects, frequently as a means of pressuring them to do or not do something. It may entail a threat to harm someone bodily as retaliation for something they have done or might do. <br>
+                For example : <span>Fuck you smith please have me notified when you reach.</span>
+
+            </div> 
+            <hr>
+            <div class="row align-items-center justify-content-betweeen">
+                <div class="col-md p-5">
+                    <p class="lead">
+                        IMAGE DATASET
+                    </p>
+                    <p>
+                        The dataset used for this project's image content has been gathered from various sources. The main source for the NSFW images have been from Alex Kim's github repository which contains a rough estimate of around 500 gb of various NSFW images each labelled under 5 categories namely, <br> 
+                        &nbsp; ◉ porn - Contains Pornographic Images. <br>
+                        &nbsp; ◉ hentai - Contains Hentai Images. <br>
+                        &nbsp; ◉ sexy - Contains sexually explicit images, but not pornography. <br>
+                        &nbsp; ◉ neutral - safe for work neutral images of everyday things and people. <br>
+                        &nbsp; ◉ drawings - safe for work drawings (including anime). <br> <br>
+                        A shell-script has been created to download all the URLs provided in the repository to store the images in the local system separated by directories with the names of the label.
+                    </p> 
+                    <!-- <a href="#" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#image">
+                        <i class="bi bi-chevron-right"></i>
+                        See Image
+                    </a> -->
+                </div>
+                <div class="col-md">
+                    <!-- <img src="https://i.redd.it/iwvqfmebheo51.jpg" class="img-fluid" alt=""> -->
+                </div>
+            </div> 
+        </div>
+    </section>
 
     <hr>
 
@@ -92,19 +149,23 @@
             <div class="p-5">
                 <h2>Test The Contents.</h2>
                 <p class="lead">Demo - What is the longest sentence/paragraph you make using swear words exclusively?</p>
-                <p style="text-align:justify;">
-                    You can’t. You need other words, like pronouns, to be the object of the sentence. If you say “fuck,” for example, you need “him” or “you” or “it” to tell us whom, or what, should be metaphorically fucked. You can issue the command “Fuck shit up,” but you still need “up” as the adverbial particle. In Glaswegian Scots, “fook” is a place you can “get tae” (the complete sentence, “Get tae fook,” means “Please depart immediately, or possible harm to your person may ensue”). But you still need those other little words in the sentence.
-                    Of course, if you are Samuel L. Jackson, “motherfucker” is a complete sentence. The Star Wars prequels become 300% more bearable if you add that fine word to the end of his dialogue:
-                    “This party’s over, motherfucker.” (Episode II, to Count Dooku)
-                    “I don’t think so, motherfucker.” (same scene)
-                    “You’re under arrest, motherfucker.” (Episode III, to Chancellor Palpatine)
+                <div style="text-align:justify;">
+                    You can’t. You need other words, like pronouns, to be the object of the sentence. <p style="display:inline">If you say “fuck,” for example, you need “him” or “you” or “it” to tell us whom, or what, should be metaphorically fucked. You can issue the command “Fuck shit up,” but you still need “up” as the adverbial particle.</p> In Glaswegian Scots, “fook” is a place you can “get tae” (the complete sentence, “Get tae fook,” means “Please depart immediately, or possible harm to your person may ensue”). But you still need those other little words in the sentence. <p style="display:inline">Of course, if you are Samuel L. Jackson, motherfucker is a complete sentence.</p> The Star Wars prequels become 300% more bearable if you add that fine word to the end of his dialogue: <p style="display:inline">
+                        “This party’s over, motherfucker.” (Episode II, to Count Dooku)
+                        “I don’t think so, motherfucker.” (same scene)
+                        “You’re under arrest, motherfucker.” (Episode III, to Chancellor Palpatine)</p>
+
                     <br><br>
-                    You are a retard. I hate you. I hate the fact you exist. You are scum. You are an absolute fucking douchebag. You are a lowlife piece of human garbage. You absolute fucking retard cunt. You are a waste of a human being. You've done ABSOLUTELY NOTHING that's important. You dumb cunt, you piece of shit. You're not even a son of a bitch, that's too dignified a term for what you are. You know, you're not even human. You don't deserve the word human because you are that much of a fucking disgrace to people all around the globe, worldwide. It's a dishonor to put you in the same sentence with that word, you asshole. Are you fucking proud of yourself? Are you proud of having accomplished absolutely nothing in your life? You have only done bad things in this world. You do not deserve to live, you shit. You are a terrible excuse for a human being. You are an ABSOLUTE cunt. You are nothing but a faggot brainlet. You sleazy two-faced bastard. You slimy sluggish asshole. You TRIFLING motherfucker.
-                    <br><br>
-                    Hi how are you?
-                    Mother fucking cock sucking slut whore cunt with dick tow ball bitch sperm burping chicklen fucking cum guzzling dollar scank pedophile dog shit tasting rabbit fucking cross dressing homophobic sucubus shit licking corn picking shit sampler with dog shit breath cause you blew the dog that ass raped you while you were picking corn off of shit in the toilet to make corn fritters with,and eating it fresh out of the bowl.Thats just a mild one,they get way better..
-                </p>
-                <div> Hi how are you?</div>
+
+                    <b>Sentences containing only Swear Words</b>
+                    <p>Mother fucking cock sucking slut whore cunt with dick tow ball bitch sperm burping chicklen fucking cum guzzling dollar scank pedophile dog shit tasting rabbit fucking cross dressing homophobic sucubus shit licking corn picking shit sampler with dog shit breath cause you blew the dog that ass raped you while you were picking corn off of shit in the toilet to make corn fritters with,and eating it fresh out of the bowl.Thats just a mild one,they get way better..</p>
+
+                    <b>Mix Of Toxic & Swear Words</b>
+                    <p>You are a retard. I hate you. I hate the fact you exist. You are scum. You are an absolute fucking douchebag. You are a lowlife piece of human garbage. You absolute fucking retard cunt. You are a waste of a human being. You've done ABSOLUTELY NOTHING that's important. You dumb cunt, you piece of shit. You're not even a son of a bitch, that's too dignified a term for what you are. You know, you're not even human. You don't deserve the word human because you are that much of a fucking disgrace to people all around the globe, worldwide. It's a dishonor to put you in the same sentence with that word, you asshole. Are you fucking proud of yourself? Are you proud of having accomplished absolutely nothing in your life? You have only done bad things in this world. You do not deserve to live, you shit. You are a terrible excuse for a human being. You are an ABSOLUTE cunt. You are nothing but a faggot brainlet. You sleazy two-faced bastard. You slimy sluggish asshole. You TRIFLING motherfucker.</p>                  
+                    
+                    This is a good line | Testing.
+                </div>
+                <div> Hi how are you? <p style="display:inline">I will kill you.</p> Well just kidding xD</div>
             </div>
         </div>
     </div>
@@ -135,7 +196,25 @@
             </div>
           </div>
         </div>
-      </div>
+    </div>
+
+    <!-- <div class="modal fade" id="image" tabindex="-1" aria-labelledby="imageLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="imageLabel">SMART EXTENSION TO SELECTIVELY REDACT WEB PAGES USING DEEP LEARNING</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="lead">Sensitive image content</p>
+              <img src="https://i.redd.it/iwvqfmebheo51.jpg" alt="">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 </body>

@@ -1,5 +1,7 @@
 let scrapeData = document.getElementById("scrapeData");
 let list = document.getElementById("dataList");
+let spinner = document.getElementById("loader");
+
 scrapedData = [];
 
 // let async fn = () => {
@@ -95,7 +97,7 @@ async function ajaxCall(data) {
               }
             })
 
-
+            alert("Safe site displayed");
 
             //   chrome.scripting.executeScript({
             //     target: { tabId: tab.id },
@@ -126,12 +128,18 @@ async function ajaxCall(data) {
     });
 }
 
+// function stopSpinner() {
+//   if (spinner.style.display === "block")
+//     spinner.style.display = "none";
+// }
+
 function replaceData(finalSentence) {
   console.log("Came hergdhjrfjhgfdhjkdf " + finalSentence);
 }
 
 // Button's click event listener
 scrapeData.addEventListener("click", async () => {
+  spinner.style.display = "block";
   // Getting current active tab
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   console.log("This is the tab ID 1st time " + tab.id);
