@@ -31,6 +31,8 @@ def imageclassify():
     labels=[]
     for i in links:
         preprocessed_image = preprocess(i)
+        if preprocessed_image == 'img not available':
+            continue
         #print('preprocessed image'+str(preprocessed_image))
         result = model.predict(preprocessed_image) > 0.5
         #print('result'+str(result))
