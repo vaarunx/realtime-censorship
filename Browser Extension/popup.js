@@ -1,11 +1,6 @@
 let scrapeData = document.getElementById("scrapeData");
 let list = document.getElementById("dataList");
-scrapedData = [];
-
-// let async fn = () => {
-//   return await chrome.tabs.query({ active: true, currentWindow: true });
-// }
-// let [tab] = fn();
+let scrapedData = [];
 
 async function getCurrentTab() {
   let queryOptions = { active: true, currentWindow: true };
@@ -21,9 +16,9 @@ const tab = getCurrentTab();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Get data
   let data = request.data;
-
   ajaxCall(data);
-
+  let imageLinks = request.imageLinks;
+  ajaxCallImage(imageLinks);
 });
 
 async function ajaxCall(data) {
@@ -126,6 +121,57 @@ async function ajaxCall(data) {
     });
 }
 
+async function ajaxCallImage(data) {
+  const tab = await getCurrentTab();
+  var url = "http://127.0.0.1:5000/imageclassify";
+  let unsafelinks = [];
+  console.log(JSON.stringify(data))
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: JSON.stringify(data),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+  })
+    .done(function (response) {
+      console.log("Hello");
+      console.log(response);
+      response.forEach((element) => {
+        unsafelinks.push(element);
+      });
+      console.log("Came here " + finalSentence);
+      console.log("TABBB " + tab.id);
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: function () {
+          window.replaceData = function (data) {
+            console.log("Please work man " + data);
+            data = data.map(string => string.trim());
+            data.forEach((ans) => {
+              console.log(ans)
+              const xpath = `//*[contains(text(),${ans})]`;
+              const elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+              console.log(elements.snapshotLength)
+              for (let i = 0; i < elements.snapshotLength; i++) {
+                const element = elements.snapshotItem(i);
+                element.style.filter = 'blur(5px)';
+              }
+            })
+          };
+        },
+      });
+      // Call the replaceData function in the scope of the current tab
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (data) => replaceData(data),
+        args: [finalSentence],
+      });
+    })
+    .fail(function (error) {
+      console.log(error);
+    });
+}
+
 function replaceData(finalSentence) {
   console.log("Came hergdhjrfjhgfdhjkdf " + finalSentence);
 }
@@ -151,14 +197,22 @@ function scrapeDataFromPage() {
   // |(?<=\<img>).*(?=\<\/img>)
 
   let data = document.body.innerHTML;
+
+  let body = data;
+  const regex = /<img.*?src=["'](.+?)["'].*?>/g;
+  const imageLinks = [];
+  let match;
+  while ((match = regex.exec(body)) !== null) {
+    imageLinks.push(match[1]);
+  }
+  console.log("imageLinks = "+ imageLinks)
+  
   data = data.replace( /(<([^>]+)>)/ig, ',');
 
   data = data.split(",")
 
   data = data.filter(element => !/^\s*\n\s*$/.test(element))
   
-
-
   // console.log(data)
   console.log(typeof(data))
 
@@ -169,5 +223,5 @@ function scrapeDataFromPage() {
   // console.log("hereeee")
 
   // Send emails to popup
-  chrome.runtime.sendMessage({ data });
+  chrome.runtime.sendMessage({ data, imageLinks });
 }
