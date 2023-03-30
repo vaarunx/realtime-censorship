@@ -23,39 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   let data = request.data;
 
   ajaxCall(data);
-  // Display data on popup
 
-  // if (data == null || data.length == 0) {
-  //   let tr = document.createElement("tr");
-  //   tr.innerText = "No Data Found";
-  //   list.appendChild(tr);
-  // } else {
-  //   data.forEach((datum) => {
-  //     let tr = document.createElement("tr");
-  //     tr.innerHTML = datum;
-  //     Array.from(tr.children).forEach((child) => {
-  //       if (!(child.tagName === "A" || child.tagName === "SPAN")) return;
-  //       child.replaceWith(document.createTextNode(child.textContent));
-  //     });
-  //     list.appendChild(tr);
-  //     scrapedData.push(tr.innerHTML);
-  //   });
-  //   // alert(scrapedData.join('\n'));
-  //   // alert(scrapedData.join('\n'));
-  // }
-
-  // const elements = document.querySelectorAll("*");
-
-  // for (let i = 0; i < elements.length; i++) {
-  //   if (
-  //     elements[i].childNodes.length === 1 &&
-  //     elements[i].textContent.indexOf(text) !== -1
-  //   ) {
-  //     console.log("Hjrhdjknfrd")
-  //     elements[i].style.filter = "blur(7px)";
-  //     //   filter: blur(5px);
-  //   }
-  // }
 });
 
 async function ajaxCall(data) {
@@ -64,6 +32,8 @@ async function ajaxCall(data) {
   var url = "http://127.0.0.1:4000/classify";
 
   let finalSentence = [];
+
+  console.log(JSON.stringify(data))
 
   $.ajax({
     type: "POST",
@@ -115,12 +85,11 @@ async function ajaxCall(data) {
             // });
 
             data.forEach((ans) => {
-              console.log("jkhfgdnj,fdkn")
-              const xpath = `//*[contains(text(),'${ans}')]`;
+              console.log(ans)
+              const xpath = `//*[contains(text(),${ans})]`;
               const elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
               console.log(elements.snapshotLength)
               for (let i = 0; i < elements.snapshotLength; i++) {
-                console.log("fdghjjfvd")
                 const element = elements.snapshotItem(i);
                 element.style.filter = 'blur(5px)';
               }
@@ -181,7 +150,17 @@ function scrapeDataFromPage() {
     /(?<=\<h1>).*(?=\<\/h1>)|(?<=\<h2>).*(?=\<\/h2>)|(?<=\<h3>).*(?=\<\/h3>)|(?<=\<h4>).*(?=\<\/h4>)|(?<=\<h5>).*(?=\<\/h5>)|(?<=\<h6>).*(?=\<\/h6>)|(?<=\<p>).*(?=\<\/p>)|(?<=\<a>).*(?=\<\/a>)|(?<=\<strong>).*(?=\<\/strong>)|(?<=\<b>).*(?=\<\/b>)|(?<=\<em>).*(?=\<\/em>)|(?<=\<i>).*(?=\<\/i>)|(?<=\<ol>).*(?=\<\/ol>)|(?<=\<ul>).*(?=\<\/ul>)|(?<=\<li>).*(?=\<\/li>)|(?<=\<div>).*(?=\<\/div>)/g;
   // |(?<=\<img>).*(?=\<\/img>)
 
-  let data = document.body.innerHTML.match(dataRegex);
+  let data = document.body.innerHTML;
+  data = data.replace( /(<([^>]+)>)/ig, ',');
+
+  data = data.split(",")
+
+  data = data.filter(element => !/^\s*\n\s*$/.test(element))
+  
+
+
+  // console.log(data)
+  console.log(typeof(data))
 
   // const elements = document.querySelectorAll("*");
 

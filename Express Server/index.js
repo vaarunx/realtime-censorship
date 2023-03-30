@@ -30,6 +30,7 @@ app.get("/", (req, res) => {
 
 app.post("/classify", (req, res) => {
   let scraped_data = JSON.stringify(req.body);
+  console.log(scraped_data)
   let data = scraped_data.split(",");
   let cleaned_data = [];
   for (let i = 0; i < data.length; i++) {
@@ -38,28 +39,33 @@ app.post("/classify", (req, res) => {
       .replace(/<style[^>]*>.*?<\/style>/gms, " ")
       .replace(/<[^>]*>/gm, " ");
     // remove non-alphabets
-    new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
+    new_str = new_str.replace(/\\n/gm ,"")
+    // new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
     // remove multiple spaces
     new_str = new_str.replace(/\s+/g, " ");
 
+    console.log(new_str)
+
+    cleaned_data.push(new_str)
+
     // console.log(new_str)
     // remove non words
-    if (new_str.length >= 1) {
-      list_wrds = new_str.split(" ");
-      let clean_str = "";
-      for (let j = 0; j < list_wrds.length; j++) {
-        if (
-          list_wrds[j].length > 0 &&
-          word_list.includes(list_wrds[j].toLowerCase())
-        ) {
-          clean_str += list_wrds[j];
-          clean_str += " ";
-        }
-      }
-      if (clean_str.length > 1) {
-        cleaned_data.push(clean_str);
-      }
-    }
+    // if (new_str.length >= 1) {
+    //   list_wrds = new_str.split(" ");
+    //   let clean_str = "";
+    //   for (let j = 0; j < list_wrds.length; j++) {
+    //     if (
+    //       list_wrds[j].length > 0 &&
+    //       word_list.includes(list_wrds[j].toLowerCase())
+    //     ) {
+    //       clean_str += list_wrds[j];
+    //       clean_str += " ";
+    //     }
+    //   }
+    //   if (clean_str.length > 1) {
+    //     cleaned_data.push(clean_str);
+    //   }
+    // }
   }
   console.log(cleaned_data);
 
@@ -71,7 +77,7 @@ app.post("/classify", (req, res) => {
   toxicity
     .load(threshold)
     .then((model) => {
-      return model.classify(resultFinal.slice(0, 15));
+      return model.classify(resultFinal);
     })
     .then((predictions) => {
       console.log(predictions);
