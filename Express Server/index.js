@@ -16,13 +16,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const PORT = process.env.PORT || 4000;
 
 let resultFinal;
-var word_list;
 
-fs.readFile("words.txt", (err, inputD) => {
-  if (err) throw err;
-  word_list = inputD.toString().split("\n");
-  word_list = word_list.map(word => word.toLowerCase()) 
-});
+// var word_list;
+// fs.readFile("words.txt", (err, inputD) => {
+//   if (err) throw err;
+//   word_list = inputD.toString().split("\n");
+//   word_list = word_list.map(word => word.toLowerCase()) 
+// });
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -34,19 +34,14 @@ app.post("/classify", (req, res) => {
   let data = scraped_data.split(",");
   let cleaned_data = [];
   for (let i = 0; i < data.length; i++) {
-    // remove html tags
-    new_str = data[i]
-      .replace(/<style[^>]*>.*?<\/style>/gms, " ")
-      .replace(/<[^>]*>/gm, " ");
-    // remove non-alphabets
+    new_str = data[i].replace(/<style[^>]*>.*?<\/style>/gms, " ");
+    new_str = new_str.replace(/<[^>]*>/gm, " ");
     new_str = new_str.replace(/\\n/gm ,"")
-    // new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
-    // remove multiple spaces
+    new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
     new_str = new_str.replace(/\s+/g, " ");
 
     console.log(new_str)
-
-    cleaned_data.push(new_str)
+    if(new_str.length>=1){ cleaned_data.push(new_str) }
 
     // console.log(new_str)
     // remove non words
@@ -67,11 +62,12 @@ app.post("/classify", (req, res) => {
     //   }
     // }
   }
-  console.log(cleaned_data);
+  console.log("Cleaned_data "+cleaned_data);
+  console.log("Cleaned_data_length " + cleaned_data.length);
 
   resultFinal = removeSentencesOccurMoreThan10(cleaned_data);
-  console.log("Cleaned_data " + cleaned_data.length);
-  console.log("Final " + resultFinal.length);
+  console.log("Final_data "+resultFinal);
+  console.log("Final_data_length" + resultFinal.length);
 
   const threshold = 0.7;
   toxicity
@@ -100,23 +96,17 @@ app.post("/classify", (req, res) => {
         finalSentence.add(element.sentence)
       });
 
-      console.log("FinalSentence " + finalSentence)
+      console.log("Predictions " + finalSentence)
 
       let val = finalSentence.values()
       finalSentenceArray = Array.from(val)
 
-      console.log("Final Sentence in an array format is " + finalSentenceArray)
+      console.log("Predictions_array " + finalSentenceArray)
 
       res.send(finalSentenceArray)
-      console.log("SENTT")
+      console.log("SENT")
 
     });
-
-    // res.send("Senddd")
-
-  // await toxicity()
-
-  // console.log(trueLabels);
 });
 
 const removeSentencesOccurMoreThan10 = (arr) => {
