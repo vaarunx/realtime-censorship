@@ -37,7 +37,7 @@ app.post("/classify", (req, res) => {
     new_str = data[i].replace(/<style[^>]*>.*?<\/style>/gms, " ");
     new_str = new_str.replace(/<[^>]*>/gm, " ");
     new_str = new_str.replace(/\\n/gm ,"")
-    new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
+    //new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
     new_str = new_str.replace(/\s+/g, " ");
 
     console.log(new_str)

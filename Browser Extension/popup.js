@@ -18,7 +18,7 @@ const tab = getCurrentTab();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Get data
   let data = request.data;
-  // ajaxCall(data);
+  ajaxCall(data);
   let imageLinks = request.imageLinks;
   ajaxCallImage(imageLinks);
 });
@@ -143,22 +143,37 @@ async function ajaxCallImage(data) {
       });
       console.log("Came here " + unsafelinks);
       console.log("TABBB " + tab.id);
+      // chrome.scripting.executeScript({
+      //   target: { tabId: tab.id },
+      //   func: function () {
+      //     window.replaceData = function (data) {
+      //       console.log("Please work man " + data);
+      //       data = data.map(string => string.trim());
+      //       data.forEach((ans) => {
+      //         console.log(ans)
+      //         const xpath = `//*[contains(text(),${ans})]`;
+      //         const elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+      //         console.log(elements.snapshotLength)
+      //         for (let i = 0; i < elements.snapshotLength; i++) {
+      //           const element = elements.snapshotItem(i);
+      //           element.style.filter = 'blur(5px)';
+      //         }
+      //       })
+      //     };
+      //   },
+      // });
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: function () {
           window.replaceData = function (data) {
             console.log("Please work man " + data);
-            data = data.map(string => string.trim());
-            data.forEach((ans) => {
-              console.log(ans)
-              const xpath = `//*[contains(text(),${ans})]`;
-              const elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-              console.log(elements.snapshotLength)
-              for (let i = 0; i < elements.snapshotLength; i++) {
-                const element = elements.snapshotItem(i);
-                element.style.filter = 'blur(5px)';
-              }
-            })
+
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (data.includes(img.src)) {
+                    img.style.filter = 'blur(7px)';
+                }
+            });
           };
         },
       });
