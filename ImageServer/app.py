@@ -4,8 +4,11 @@ import cv2
 import numpy as np
 import os
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 model = load_model('nsfw_classifier.h5')
 
@@ -27,23 +30,27 @@ def hello_world():
 @app.route("/imageclassify", methods=['POST'])
 def imageclassify():
     data = request.get_json()
-    links = data['links']
+    #print('links = '+str(data))
     labels=[]
-    for i in links:
+    for i in data:
         preprocessed_image = preprocess(i)
         if preprocessed_image == 'img not available':
-            continue
-        #print('preprocessed image'+str(preprocessed_image))
-        result = model.predict(preprocessed_image) > 0.5
-        #print('result'+str(result))
-        if result[0][0]:
-            prediction='NSFW'
+            labels.append('img not found')
         else:
-            prediction='Safe'
-        labels.append(prediction)
-        #print('prediction'+prediction)
+            #print('preprocessed image = '+str(preprocessed_image))
+            result = model.predict(preprocessed_image) > 0.5
+            #print('result = '+str(result))
+            if result[0][0]:
+                prediction='NSFW'
+            else:
+                prediction='Safe'
+            labels.append(prediction)
+            #print('prediction = '+prediction)
     unsafe_links = []
-    for i in range(len(links)):
+    print('labels: '+str(labels)+' len labels: '+str(len(labels))+' len data: '+str(len(data)))
+    for i in range(len(data)):
         if labels[i] == 'NSFW':
-            unsafe_links.append(links[i])
+            print(data[i])
+            unsafe_links.append(data[i])
+    print('unsafe links: '+str(unsafe_links))
     return unsafe_links

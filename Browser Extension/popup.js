@@ -18,7 +18,7 @@ const tab = getCurrentTab();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Get data
   let data = request.data;
-  ajaxCall(data);
+  // ajaxCall(data);
   let imageLinks = request.imageLinks;
   ajaxCallImage(imageLinks);
 });
@@ -136,12 +136,12 @@ async function ajaxCallImage(data) {
     dataType: "json",
   })
     .done(function (response) {
-      console.log("Hello");
+      console.log("inside image call");
       console.log(response);
       response.forEach((element) => {
         unsafelinks.push(element);
       });
-      console.log("Came here " + finalSentence);
+      console.log("Came here " + unsafelinks);
       console.log("TABBB " + tab.id);
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
@@ -166,7 +166,7 @@ async function ajaxCallImage(data) {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: (data) => replaceData(data),
-        args: [finalSentence],
+        args: [unsafelinks],
       });
     })
     .fail(function (error) {
