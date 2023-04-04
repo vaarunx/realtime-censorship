@@ -3,7 +3,8 @@ const cors = require("cors");
 const toxicity = require("@tensorflow-models/toxicity");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-const { data } = require("@tensorflow/tfjs");
+const tf = require('@tensorflow/tfjs-node');
+//const { data } = require("@tensorflow/tfjs");
 const { type } = require("os");
 const app = express();
 
@@ -30,7 +31,7 @@ app.get("/", (req, res) => {
 
 app.post("/classify", (req, res) => {
   let scraped_data = JSON.stringify(req.body);
-  console.log(scraped_data)
+  //console.log(scraped_data)
   let data = scraped_data.split(",");
   let cleaned_data = [];
   for (let i = 0; i < data.length; i++) {
@@ -40,7 +41,7 @@ app.post("/classify", (req, res) => {
     //new_str = new_str.replace(/[^a-zA-Z\s]/g, " ");
     new_str = new_str.replace(/\s+/g, " ");
 
-    console.log(new_str)
+    //console.log(new_str)
     if(new_str.length>=1){ cleaned_data.push(new_str) }
 
     // console.log(new_str)
@@ -62,12 +63,17 @@ app.post("/classify", (req, res) => {
     //   }
     // }
   }
-  console.log("Cleaned_data "+cleaned_data);
-  console.log("Cleaned_data_length " + cleaned_data.length);
+  //console.log("Cleaned_data "+cleaned_data);
+  console.log("--------------------");
+  console.log("Scraped_data_length: " + scraped_data.length);
+
+  console.log("--------------------");
+  console.log("Cleaned_data_length: " + cleaned_data.length);
 
   resultFinal = removeSentencesOccurMoreThan10(cleaned_data);
-  console.log("Final_data "+resultFinal);
-  console.log("Final_data_length" + resultFinal.length);
+  //console.log("Final_data "+resultFinal);
+  console.log("--------------------");
+  console.log("Final_data_length: " + resultFinal.length);
 
   const threshold = 0.7;
   toxicity
@@ -76,7 +82,7 @@ app.post("/classify", (req, res) => {
       return model.classify(resultFinal);
     })
     .then((predictions) => {
-      console.log(predictions);
+      //console.log(predictions);
       let i = 0;
       let trueLabels = [];
       for (let i = 0; i < predictions.length; i++) {
@@ -90,18 +96,19 @@ app.post("/classify", (req, res) => {
         }
       }
       
-      console.log(trueLabels);
+      //console.log(trueLabels);
       let finalSentence = new Set()
       trueLabels.forEach(element => {
         finalSentence.add(element.sentence)
       });
 
-      console.log("Predictions " + finalSentence)
+      //console.log("Predictions: " + finalSentence)
 
       let val = finalSentence.values()
       finalSentenceArray = Array.from(val)
 
-      console.log("Predictions_array " + finalSentenceArray)
+console.log("--------------------")
+      console.log("Predictions_array: " + finalSentenceArray)
 
       res.send(finalSentenceArray)
       console.log("SENT")
