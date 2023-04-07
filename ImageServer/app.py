@@ -30,12 +30,15 @@ def hello_world():
 @app.route("/imageclassify", methods=['POST'])
 def imageclassify():
     data = request.get_json()
-    #print('links = '+str(data))
-    labels=[]
+    #data=['i.redd.it/g4zzlchn1yra1.jpg']
+    print('links = '+str(data))
+    labels=['NSFW']
     for i in data:
+        r = requests.post("https://api.deepai.org/api/nsfw-detector",data={'image': i,},headers={'api-key': 'quickstart-QUdJIGlzIGNvbWluZy4uLi4K'})
+        print(r.json())
         preprocessed_image = preprocess(i)
         if preprocessed_image == 'img not available':
-            labels.append('img not found')
+            labels.append('NSFW')
         else:
             #print('preprocessed image = '+str(preprocessed_image))
             result = model.predict(preprocessed_image) > 0.5
