@@ -4,22 +4,18 @@ import cv2
 import numpy as np
 import os
 import requests
+from classify_nsfw import main
 from flask_cors import CORS
 
 app = Flask(__name__)
 
 CORS(app)
 
-model = load_model('nsfw_classifier.h5')
-
 def preprocess(file):
     try:
-        response  = requests.get(file, stream=True)
-        arr = np.asarray(bytearray(response.content), dtype=np.uint8)
-        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-        test_img_re = cv2.resize(img, (306, 306), interpolation=cv2.INTER_AREA)
-        test_img = np.expand_dims(test_img_re, axis=0)
-        return test_img
+        response = requests.get(file, stream=True)
+        image_data = response.content
+        return image_data
     except:
         return 'img not available'
     
@@ -38,12 +34,15 @@ def imageclassify():
             labels.append('img not found')
         else:
             #print('preprocessed image = '+str(preprocessed_image))
-            result = model.predict(preprocessed_image) > 0.5
+            result = main(preprocessed_image)
             #print('result = '+str(result))
-            if result[0][0]:
-                prediction='NSFW'
+            result = result.split('\t')
+            nsfw_score = float(result[4])
+            sfw_score = float(result[2][:-1])
+            if nsfw_score>sfw_score:
+                prediction = 'NSFW'
             else:
-                prediction='Safe'
+                prediction = 'Safe'
             labels.append(prediction)
             #print('prediction = '+prediction)
     unsafe_links = []
