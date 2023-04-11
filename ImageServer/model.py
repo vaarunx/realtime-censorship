@@ -38,6 +38,8 @@ class OpenNsfwModel:
         elif input_type == InputType.BASE64_JPEG:
             from image_utils import load_base64_tensor
 
+            tf.compat.v1.disable_eager_execution()
+            
             self.input = tf.compat.v1.placeholder(tf.string, shape=(None,), name="input")
             self.input_tensor = load_base64_tensor(self.input)
         else:
