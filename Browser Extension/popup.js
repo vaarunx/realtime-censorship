@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function ajaxCall(data) {
   const tab = await getCurrentTab();
-
+  //var url = "http://137.116.115.240:4000/classify";
   var url = "http://127.0.0.1:4000/classify";
 
   let finalSentence = [];
@@ -125,6 +125,7 @@ async function ajaxCall(data) {
 
 async function ajaxCallImage(data) {
   const tab = await getCurrentTab();
+  //var url = "http://137.116.115.240:5000/imageclassify";
   var url = "http://127.0.0.1:5000/imageclassify";
   let unsafelinks = [];
   console.log(JSON.stringify(data))
