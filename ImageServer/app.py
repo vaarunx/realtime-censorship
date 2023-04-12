@@ -47,10 +47,9 @@ def imageclassify():
             labels.append('img not found')
 
     unsafe_links = []
-    print('labels: '+str(labels)+' len labels: '+str(len(labels))+' len data: '+str(len(data)))
+    #print('labels: '+str(labels)+' len labels: '+str(len(labels))+' len data: '+str(len(data)))
     for i in range(len(data)):
         if labels[i] == 'NSFW':
-            print(data[i])
             unsafe_links.append(data[i])
-    print('unsafe links: '+str(unsafe_links))
+    #print('unsafe links: '+str(unsafe_links))
     return unsafe_links
