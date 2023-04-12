@@ -21,10 +21,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Building Model
-model = OpenNsfwModel()
-input_type = InputType['BASE64_JPEG']
-model.build(weights_path='./open_nsfw-weights.npy', input_type=input_type)
-
+                
 def preprocess(file):
     response = requests.get(file, stream=True)
     return response.content
@@ -40,26 +37,30 @@ def imageclassify():
     labels=[]
     for i in data:
         if 'http' in i:
-            preprocessed_image = preprocess(i)
+            model = OpenNsfwModel()
+            input_type = InputType['BASE64_JPEG']
+            model.build(weights_path='./open_nsfw-weights.npy', input_type=input_type)
+            fn_load_image = lambda filename: np.array([base64.urlsafe_b64encode(filename)])
+            response = requests.get(i, stream=True)
+            preprocessed_image = response.content
             #print('preprocessed image = '+str(preprocessed_image))
-            with tf.compat.v1.Session() as sess:
-                fn_load_image = lambda filename: np.array([base64.urlsafe_b64encode(filename)])
-                sess.run(tf.compat.v1.global_variables_initializer())
-                image = fn_load_image(preprocessed_image)
-                print(type(preprocessed_image))
-                print(type(image))
-                predictions = sess.run(model.predictions,feed_dict={model.input: np.array(image)})
-                result = "\tSFW score:\t{}\n\tNSFW score:\t{}".format(*predictions[0])
-                #print('result = '+str(result))
-                result = result.split('\t')
-                nsfw_score = float(result[4])
-                sfw_score = float(result[2][:-1])
-                if nsfw_score>sfw_score:
-                    prediction = 'NSFW'
-                else:
-                    prediction = 'Safe'
-                labels.append(prediction)
-                #print('prediction = '+prediction)
+            image = fn_load_image(preprocessed_image)
+            print(type(preprocessed_image))
+            print(type(image))
+            predictions = model.predict(image)
+            result = "\tSFW score:\t{}\n\tNSFW score:\t{}".format(*predictions[0])
+            #print('result = '+str(result))
+            result = result.split('\t')
+            nsfw_score = float(result[4])
+            sfw_score = float(result[2][:-1])
+            if nsfw_score>sfw_score:
+                prediction = 'NSFW'
+            else:
+                prediction = 'Safe'
+            labels.append(prediction)
+            #print('prediction = '+prediction)
+            sess.close()
+            tf.compat.v1.reset_default_graph()
         else:
             labels.append('img not found')
     unsafe_links = []
